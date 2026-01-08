@@ -66,5 +66,5 @@ def analyze(payload: AnalysisRequest):
             "breaches": breaches
         }
     
-    return results
+    return {"regions": results}
 
