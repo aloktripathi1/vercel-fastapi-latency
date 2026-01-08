@@ -49,10 +49,18 @@ def analyze(payload: AnalysisRequest):
         # Calculate metrics
         avg_latency = statistics.mean(latencies)
         
-        # Calculate 95th percentile
+        # Calculate 95th percentile using linear interpolation
         sorted_latencies = sorted(latencies)
-        p95_index = int(len(sorted_latencies) * 0.95)
-        p95_latency = sorted_latencies[p95_index] if p95_index < len(sorted_latencies) else sorted_latencies[-1]
+        n = len(sorted_latencies)
+        index = 0.95 * (n - 1)
+        lower = int(index)
+        upper = lower + 1
+        fraction = index - lower
+        
+        if upper < n:
+            p95_latency = sorted_latencies[lower] + fraction * (sorted_latencies[upper] - sorted_latencies[lower])
+        else:
+            p95_latency = sorted_latencies[lower]
         
         avg_uptime = statistics.mean(uptimes)
         
